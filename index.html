@@ -112,6 +112,16 @@
       pointer-events: none;
       animation: fall 3s linear forwards;
     }
+    .polaroid {
+      background: white;
+      padding: 15px;
+      padding-bottom: 5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: rotate(-3deg); /* Gives it that messy, cute look */
+      margin: 20px auto;
+      max-width: 300px;
+      border: 1px solid #ddd;
+    }
 
     @keyframes fall {
       to { transform: translateY(110vh) rotate(360deg); }
@@ -213,7 +223,16 @@ window.pick = (idx) => {
 window.next = () => {
   current++;
   if (current < questions.length) showQ();
-  else quizDiv.innerHTML = "<h1>HAPPY VALENTINE'S DAY! ❤️</h1><p style='font-size:30px'>You passed the exam with flying colors!</p>";
+  else {
+    // This part replaces the quiz with your final message and photo
+    quizDiv.innerHTML = `
+      <h1 style="font-size: 40px;">HAPPY VALENTINE'S DAY MY LOVE! ❤️</h1>
+      <div class="polaroid">
+        <img src="us.png" style="width: 100%; border-radius: 5px;">
+        <p style="font-size: 24px; margin-top: 10px;">You passed with flying colors! 🏆</p>
+      </div>
+    `;
+  }
 };
 </script>
 
