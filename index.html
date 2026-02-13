@@ -126,40 +126,50 @@ const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
 /* =============================
-   STRICT BOUNDARY NO BUTTON
-   Guaranteed to stay on screen
+   DYNAMIC REPULSION LOGIC
+   Moves in ANY direction away from mouse
 ============================= */
 document.addEventListener("mousemove", (e) => {
   if (introArea.style.display === "none") return; 
 
   const rect = noBtn.getBoundingClientRect();
-  const buttonX = rect.left + rect.width / 2;
-  const buttonY = rect.top + rect.height / 2;
-  const mouseDistance = Math.sqrt(Math.pow(e.clientX - buttonX, 2) + Math.pow(e.clientY - buttonY, 2));
+  
+  // Calculate the center of the button
+  const buttonCenterX = rect.left + rect.width / 2;
+  const buttonCenterY = rect.top + rect.height / 2;
 
-  // If mouse is within 100px
-  if (mouseDistance < 100) {
-    const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
-    const hop = 100; // Distance it jumps
+  // Calculate distance between mouse and button center
+  const distance = Math.sqrt(
+    Math.pow(e.clientX - buttonCenterX, 2) +
+    Math.pow(e.clientY - buttonCenterY, 2)
+  );
+
+  // Trigger movement when mouse is within 120 pixels
+  if (distance < 120) {
+    // Calculate the angle from the mouse to the button
+    const angle = Math.atan2(buttonCenterY - e.clientY, buttonCenterX - e.clientX);
     
-    // Calculate potential new position
+    // The "Jump" distance
+    const hop = 150; 
+
+    // Calculate new target coordinates
     let newX = rect.left + Math.cos(angle) * hop;
     let newY = rect.top + Math.sin(angle) * hop;
 
-    // --- THE FIX: ENFORCED BOUNDARIES ---
-    const buffer = 50; // Keep it 50px away from any edge
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
+    // --- SCREEN BOUNDARY PROTECTION ---
+    const pad = 40; // Safety margin from edges
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
 
-    // If it tries to go off the right side, push it left
-    if (newX + rect.width > screenWidth - buffer) newX = screenWidth - rect.width - buffer;
-    // If it tries to go off the left side, push it right
-    if (newX < buffer) newX = buffer;
-    // If it tries to go off the bottom, push it up
-    if (newY + rect.height > screenHeight - buffer) newY = screenHeight - rect.height - buffer;
-    // If it tries to go off the top, push it down
-    if (newY < buffer) newY = buffer;
+    // Clamp X coordinate
+    if (newX < pad) newX = pad;
+    if (newX + rect.width > screenW - pad) newX = screenW - rect.width - pad;
 
+    // Clamp Y coordinate
+    if (newY < pad) newY = pad;
+    if (newY + rect.height > screenH - pad) newY = screenH - rect.height - pad;
+
+    // Apply the new position
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
   }
