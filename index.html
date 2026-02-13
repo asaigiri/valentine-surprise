@@ -73,16 +73,21 @@
 
     #yesBtn { background-color: #000; color: #ccff33; animation: pulse 1.5s infinite; }
     
-    /* NO BUTTON - Fixed position is key for movement */
+    /* Update this in your <style> section */
+    .container {
+      position: relative; /* This is the anchor */
+      /* ... keep your other container styles ... */
+    }
+    
     #noBtn {
       background-color: #fff;
       color: #000;
-      position: fixed; /* Must be fixed */
-      z-index: 9999;
-      /* Set a fixed starting point so the JS doesn't get confused */
-      left: 300px; 
-      top: 400px;
-      transition: all 0.15s ease-out; /* Smooths the movement */
+      position: absolute; /* Changed from fixed to absolute */
+      z-index: 999;
+      transition: all 0.2s ease;
+      /* Starting position inside the box */
+      left: 70%; 
+      top: 60%;
     }
     .optionBtn { display: block; width: 100%; margin: 8px 0; background: #000; color: #ccff33; }
     #nextBtn { background: #fff; color: #000; margin-top: 15px; }
@@ -128,45 +133,40 @@ const yesBtn = document.getElementById("yesBtn");
 const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
-/* =============================
-   ANTI-GRAVITY NO BUTTON
-   Calculates precise push-back
-============================= */
+const container = document.querySelector(".container");
+
 document.addEventListener("mousemove", (e) => {
   if (introArea.style.display === "none") return;
 
   const rect = noBtn.getBoundingClientRect();
-  const btnX = rect.left + rect.width / 2;
-  const btnY = rect.top + rect.height / 2;
+  const containerRect = container.getBoundingClientRect();
+  
+  const btnCenterX = rect.left + rect.width / 2;
+  const btnCenterY = rect.top + rect.height / 2;
 
-  // Distance between mouse and button
-  const distX = e.clientX - btnX;
-  const distY = e.clientY - btnY;
-  const distance = Math.sqrt(distX * distX + distY * distY);
+  const distance = Math.sqrt(
+    Math.pow(e.clientX - btnCenterX, 2) +
+    Math.pow(e.clientY - btnCenterY, 2)
+  );
 
-  // If mouse is within 120px
-  if (distance < 120) {
-    const angle = Math.atan2(distY, distX);
+  // If mouse is within 80px
+  if (distance < 80) {
+    // Generate random coordinates WITHIN the container
+    // We give it a little "extra" room (padding) so it can go slightly outside the box
+    const padding = 50; 
     
-    // We move it in the OPPOSITE direction of the angle
-    const moveX = Math.cos(angle) * 150;
-    const moveY = Math.sin(angle) * 150;
+    // Calculate max moves within the box
+    const maxX = containerRect.width + padding;
+    const minX = -padding;
+    const maxY = containerRect.height + padding;
+    const minY = -padding;
 
-    let targetX = rect.left - moveX;
-    let targetY = rect.top - moveY;
+    // Randomly hop to a new spot inside this "fence"
+    const newX = Math.random() * (maxX - minX) + minX;
+    const newY = Math.random() * (maxY - minY) + minY;
 
-    // Boundaries
-    const pad = 50;
-    const winW = window.innerWidth;
-    const winH = window.innerHeight;
-
-    if (targetX < pad) targetX = pad;
-    if (targetX + rect.width > winW - pad) targetX = winW - rect.width - pad;
-    if (targetY < pad) targetY = pad;
-    if (targetY + rect.height > winH - pad) targetY = winH - rect.height - pad;
-
-    noBtn.style.left = targetX + "px";
-    noBtn.style.top = targetY + "px";
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
   }
 });
 
