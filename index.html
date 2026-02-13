@@ -1,167 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine Exam 💚</title>
 
   <style>
+    /* 1. VIBE & BACKGROUND */
     body {
       margin: 0;
       height: 100vh;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #bfff00, #ccff33);
+      font-family: 'Arial Black', Gadget, sans-serif;
+      background: radial-gradient(circle, #ccff33, #88b300);
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
       overflow: hidden;
-      color: black; /* All text now black */
+      color: #000;
     }
 
+    /* 2. THE GLASS CONTAINER */
     .container {
       position: relative;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 50px 30px;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
       width: 90%;
-      max-width: 800px;
+      max-width: 600px;
+      z-index: 10;
     }
 
     h1 {
-      font-size: 70px;
-      margin-bottom: 50px;
+      font-size: clamp(32px, 8vw, 60px);
+      line-height: 1.1;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      color: #000;
+      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
     }
 
+    /* 3. NEON BUTTONS */
     button {
-      padding: 20px 40px;
-      font-size: 28px;
-      border: none;
-      border-radius: 40px;
+      padding: 18px 35px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      border: 4px solid #000;
+      border-radius: 15px;
       cursor: pointer;
-      margin: 20px;
-      transition: 0.2s;
+      margin: 10px;
+      transition: all 0.1s ease;
+      box-shadow: 6px 6px 0px #000;
     }
 
-    #yesBtn {
-      background-color: black;
-      color: lime;
+    button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0px #000;
+    }
+
+    button:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0px #000;
+    }
+
+    #yesBtn, .optionBtn, #nextBtn {
+      background-color: #000;
+      color: #ccff33;
     }
 
     #noBtn {
-      background-color: black;
-      color: white;
-      position: absolute;
+      background-color: #fff;
+      color: #000;
+      position: fixed; /* Fixed ensures it moves relative to screen */
+      z-index: 9999;
     }
 
     .optionBtn {
       display: block;
       width: 100%;
-      margin: 15px 0;
-      font-size: 22px;
-      background-color: black;
-      color: lime;
+      margin: 12px 0;
+      font-size: 18px;
+    }
+
+    /* 4. GIFS & RESPONSES */
+    .response-gif {
+      width: 80%;
+      max-width: 250px;
+      border-radius: 20px;
+      margin-top: 20px;
+      border: 5px solid #000;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #response {
-    margin-top: 25px;
-    font-size: 28px;
-    font-weight: bold;
-    min-height: 60px;
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      min-height: 50px;
     }
 
-    #nextBtn {
-      display: none;
-      margin-top: 20px;
-      background-color: black;
-      color: lime;
+    /* 5. ANIMATIONS */
+    .sock {
+      position: fixed;
+      top: -50px;
+      font-size: 40px;
+      z-index: 1;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(360deg); }
     }
 
     .finalMessage {
-      font-size: 60px;
-      font-weight: bold;
-
-      /* Sticker animation base */
-    .sticker {
-      font-size: 60px;
-      margin-top: 15px;
-      animation: pop 0.6s ease;
-    }
-    
-    @keyframes pop {
-      0% { transform: scale(0); }
-      80% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    
-    /* Falling socks animation */
-    .sock {
-      position: fixed;
-      font-size: 40px;
-      animation: fall 3s linear forwards;
-    }
-    
-    @keyframes fall {
-      from { transform: translateY(-100px); }
-      to { transform: translateY(110vh); }
-    }
+      font-size: 50px;
+      color: #000;
     }
   </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1 id="mainText">Will you be my Valentine?</h1>
-
-  <button id="yesBtn">YES</button>
-  <button id="noBtn">NO</button>
-
-  <div id="quiz"></div>
+<div class="container" id="mainBox">
+  <div id="introArea">
+    <h1 id="mainText">Will you be my Valentine?</h1>
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
+  </div>
+  
+  <div id="quiz" style="display: none;"></div>
 </div>
 
 <script>
-
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const quizDiv = document.getElementById("quiz");
-
-noBtn.style.left = "60%";
-noBtn.style.top = "60%";
+const introArea = document.getElementById("introArea");
 
 /* =============================
-   FLOATING NO BUTTON
-   It MOVES but never disappears
+   NO BUTTON LOGIC (Fixed)
 ============================= */
-
 document.addEventListener("mousemove", (e) => {
-
-  if (yesBtn.style.display === "none") return; 
-  // only active on first screen
-
   const rect = noBtn.getBoundingClientRect();
   const buttonX = rect.left + rect.width / 2;
   const buttonY = rect.top + rect.height / 2;
 
   const distance = Math.sqrt(
-    Math.pow(e.clientX - buttonX, 2) +
-    Math.pow(e.clientY - buttonY, 2)
+    Math.pow(e.clientX - buttonX, 2) + Math.pow(e.clientY - buttonY, 2)
   );
 
-  if (distance < 120) {
+  // If mouse gets within 150px, move the button
+  if (distance < 150) {
     const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
-    const moveDistance = 150;
+    const moveDist = 200;
 
-    const newX = rect.left + Math.cos(angle) * moveDistance;
-    const newY = rect.top + Math.sin(angle) * moveDistance;
+    let newX = rect.left + Math.cos(angle) * moveDist;
+    let newY = rect.top + Math.sin(angle) * moveDist;
 
-    const maxX = window.innerWidth - rect.width;
-    const maxY = window.innerHeight - rect.height;
+    // Boundary check to keep it on screen
+    const pad = 20;
+    newX = Math.max(pad, Math.min(newX, window.innerWidth - rect.width - pad));
+    newY = Math.max(pad, Math.min(newY, window.innerHeight - rect.height - pad));
 
-    noBtn.style.left = Math.min(Math.max(0, newX), maxX) + "px";
-    noBtn.style.top = Math.min(Math.max(0, newY), maxY) + "px";
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
   }
 });
 
 /* =============================
    QUIZ DATA
 ============================= */
-
 const questions = [
   {
     question: "1️⃣ Let’s start easy. Where did we first kiss?",
@@ -174,136 +191,102 @@ const questions = [
     question: "2️⃣ Who coined the term babsies?",
     options: ["Anurag", "Priyadarshini"],
     correctIndex: -1,
-    correctResponse: "Does it matter? All that matters is you are the bestest.",
+    correctResponse: "Does it matter? You are the bestest.",
     wrongResponse: ""
   },
   {
-    question: "3️⃣ How many pairs of socks have you stolen from me?",
+    question: "3️⃣ How many pairs of socks have you stolen?",
     options: ["2", "10", "100", "Elon Musk's net worth in socks"],
     correctIndex: -1,
-    correctResponse: "It’s somewhere between infinity and infinity.",
+    correctResponse: "Infinity. And I want them back (jks).",
     wrongResponse: ""
   },
   {
     question: "4️⃣ Which outfit do I love on you?",
-    options: ["Summer dress", "Blazer-skirt-stockings", "Sports bra look"],
+    options: ["Summer dress", "Blazer look", "Sports bra look"],
     correctIndex: 1,
-    correctResponse: "Technically I love everything and nothing on you… but that corporate look makes me swoon.",
-    wrongResponse: "Incorrect. But honestly… I love everything on you."
+    correctResponse: "That corporate look makes me swoon.",
+    wrongResponse: "Honestly? I love everything on you."
   },
   {
     question: "5️⃣ Do I love you the mostest?",
     options: ["Yes", "Yes"],
     correctIndex: 0,
-    correctResponse: "YAYYY!! See I love you the mostest.",
+    correctResponse: "Correct! See, I love you the mostest.",
     wrongResponse: ""
   }
+];
+
+// GIF PLACEHOLDERS - Replace these URLs
+const gifs = [
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIzeGZ3ZzRxeHpxZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41JWZ59aaaGb9Gxy/giphy.gif",
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHN3Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKoWXlo3M1nCik8/giphy.gif",
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gs6vEzLPaxuCdxK/giphy.gif",
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKDkDbIDJieKbVm/giphy.gif",
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0Exk8EUzM9mR69Y4/giphy.gif"
 ];
 
 let currentQuestion = 0;
 
 /* =============================
-   START QUIZ
+   GAME ENGINE
 ============================= */
-
 yesBtn.addEventListener("click", () => {
-
-  yesBtn.style.display = "none";
+  introArea.style.display = "none";
   noBtn.style.display = "none";
-
+  quizDiv.style.display = "block";
   showQuestion();
 });
 
-/* =============================
-   SHOW QUESTION
-============================= */
-
-function showQuestion() {
-
+window.showQuestion = function() {
   const q = questions[currentQuestion];
-
   quizDiv.innerHTML = `
-    <h2>${q.question}</h2>
-    ${q.options.map((option, index) =>
-      `<button class="optionBtn" onclick="selectAnswer(${index})">${option}</button>`
-    ).join("")}
+    <h1>${q.question}</h1>
+    <div id="optionsContainer">
+      ${q.options.map((opt, i) => `<button class="optionBtn" onclick="handleSelect(${i})">${opt}</button>`).join('')}
+    </div>
     <div id="response"></div>
-    <button id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
+    <button id="nextBtn" style="display:none;" onclick="handleNext()">Next ➡️</button>
   `;
 }
 
-/* =============================
-   HANDLE ANSWER CLICK
-============================= */
-
-function selectAnswer(selectedIndex) {
-
+window.handleSelect = function(idx) {
   const q = questions[currentQuestion];
-  const responseDiv = document.getElementById("response");
-
-  responseDiv.innerHTML = "";
-
-  let stickerHTML = "";
-
-  if (currentQuestion === 0) {
-    stickerHTML = "<div class='sticker'>💋</div>";
-  }
-
-  if (currentQuestion === 1) {
-    stickerHTML = "<div class='sticker'>🌟 YOU ARE THE BESTEST 🌟</div>";
-  }
-
-  if (currentQuestion === 2) {
-    // Rain of socks
-    for (let i = 0; i < 20; i++) {
-      let sock = document.createElement("div");
-      sock.className = "sock";
-      sock.innerHTML = "🧦";
-      sock.style.left = Math.random() * 100 + "vw";
-      sock.style.animationDuration = (2 + Math.random() * 2) + "s";
-      document.body.appendChild(sock);
-
-      setTimeout(() => sock.remove(), 3000);
-    }
-    stickerHTML = "<div class='sticker'>🧦🧦🧦</div>";
-  }
-
-  if (currentQuestion === 3) {
-    stickerHTML = "<div class='sticker'>🤤</div>";
-  }
-
-  if (currentQuestion === 4) {
-    stickerHTML = "<div class='sticker'>😸🎉😸</div>";
-  }
-
-  if (q.correctIndex === -1 || selectedIndex === q.correctIndex) {
-    responseDiv.innerHTML = q.correctResponse + stickerHTML;
+  const resp = document.getElementById("response");
+  
+  // Show GIF
+  const imgHtml = `<img src="${gifs[currentQuestion]}" class="response-gif">`;
+  
+  if (q.correctIndex === -1 || idx === q.correctIndex) {
+    resp.innerHTML = q.correctResponse + imgHtml;
   } else {
-    responseDiv.innerHTML = q.wrongResponse + stickerHTML;
+    resp.innerHTML = q.wrongResponse + imgHtml;
+  }
+
+  // Sock rain for question 3
+  if (currentQuestion === 2) {
+    for(let i=0; i<25; i++) {
+      let s = document.createElement("div");
+      s.className = "sock"; s.innerHTML = "🧦";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (Math.random() * 2 + 1) + "s";
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 3000);
+    }
   }
 
   document.getElementById("nextBtn").style.display = "inline-block";
+  document.getElementById("optionsContainer").style.pointerEvents = "none"; // Prevent double clicking
 }
 
-
-/* =============================
-   NEXT QUESTION
-============================= */
-
-function nextQuestion() {
+window.handleNext = function() {
   currentQuestion++;
-
   if (currentQuestion < questions.length) {
     showQuestion();
   } else {
-    quizDiv.innerHTML = `
-      <div class="finalMessage">
-        Happy Valentine’s Day My Love
-      </div>
-    `;
+    quizDiv.innerHTML = `<div class="finalMessage">HAPPY VALENTINE'S DAY MY LOVE ❤️</div>`;
   }
 }
-
 </script>
 
 </body>
