@@ -124,6 +124,13 @@
     <button id="noBtn">NO</button>
   </div>
   
+  <div id="captionArea" style="display: none;">
+  <img src="YOUR_CONFIRMATION_GIF_URL" class="response-gif">
+  <h1>Duh!! Ofcourse I love you the mostest 😉</h1>
+  <p style="font-size: 30px;">But before we celebrate, you have to pass a little "Us" exam...</p>
+  <button id="startQuizBtn" style="background: black; color: #ccff33;">I'm Ready! ✍️</button>
+</div>
+  
   <div id="quiz" style="display: none;"></div>
 </div>
 
@@ -190,11 +197,22 @@ const gifs = [
 
 let current = 0;
 
+// New variables to grab the new elements
+const captionArea = document.getElementById("captionArea");
+const startQuizBtn = document.getElementById("startQuizBtn");
+
+// Change the Yes button to show the caption instead of the quiz
 yesBtn.onclick = () => {
   introArea.style.display = "none";
   noBtn.style.display = "none";
+  captionArea.style.display = "block"; // Show the sweet message
+};
+
+// Add this to handle the transition from caption to quiz
+startQuizBtn.onclick = () => {
+  captionArea.style.display = "none";
   quizDiv.style.display = "block";
-  showQ();
+  showQ(); // Now the quiz starts
 };
 
 function showQ() {
