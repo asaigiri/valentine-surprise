@@ -228,7 +228,7 @@ window.pick = (idx) => {
   const item = questions[current];
   const r = document.getElementById("res");
   const gif = `<br><img src="${gifs[current]}" class="response-gif">`;
-  r.innerHTML = (item.ans === -1 || idx === item.ans ? item.res : "Hmm... I remember it differently 👀") + gif;
+  r.innerHTML = (item.ans === -1 || idx === item.ans ? item.res : "Hmm... starts with Broad and ends with Street 👀") + gif;
   
   if(current === 2) { // Sock Rain
     for(let i=0; i<20; i++) {
