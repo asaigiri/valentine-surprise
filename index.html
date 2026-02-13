@@ -2,109 +2,179 @@
 <html>
 <head>
   <title>Be My Valentine?</title>
+
   <style>
+    /* ===== PAGE STYLING ===== */
     body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #ff9ecf, #ffcce6);
-      height: 100vh;
       margin: 0;
-      overflow: hidden;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+
+      /* Lime green gradient background */
+      background: linear-gradient(135deg, #bfff00, #ccff33);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      overflow: hidden; /* prevents scroll when button moves */
+    }
+
+    .container {
+      position: relative;
     }
 
     h1 {
-      margin-top: 120px;
       font-size: 40px;
       color: white;
     }
 
-    .buttons {
-      margin-top: 40px;
-      position: relative;
-    }
-
     button {
       padding: 15px 30px;
-      font-size: 20px;
+      font-size: 18px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      margin: 10px;
+      margin: 15px;
       transition: 0.2s;
     }
 
     #yesBtn {
-      background-color: #ff4d6d;
-      color: white;
+      background-color: white;
+      color: #6dbf00;
     }
 
     #noBtn {
-      background-color: white;
-      color: #ff4d6d;
-      position: absolute;
+      background-color: #6dbf00;
+      color: white;
+      position: absolute; /* allows movement */
     }
 
-    #message {
-      margin-top: 50px;
-      font-size: 24px;
+    #questionnaire {
+      margin-top: 30px;
       color: white;
     }
 
-    .heart {
-      position: absolute;
-      color: red;
-      font-size: 24px;
-      animation: float 3s linear infinite;
-    }
-
-    @keyframes float {
-      from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(-200px); opacity: 0; }
+    select {
+      padding: 8px;
+      border-radius: 10px;
+      margin: 5px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Will you be my Valentine? ❤️</h1>
+  <div class="container">
+    <h1 id="mainText">Will you be my Valentine? 💚</h1>
 
-  <div class="buttons">
     <button id="yesBtn">Yes 💖</button>
     <button id="noBtn">No 😢</button>
+
+    <div id="questionnaire"></div>
   </div>
 
-  <div id="message"></div>
-
   <script>
+
+    // Get references to elements
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const message = document.getElementById("message");
+    const questionnaire = document.getElementById("questionnaire");
+    const container = document.querySelector(".container");
 
-    // Make NO button run away
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 100);
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    });
+    // Position NO button initially
+    noBtn.style.left = "150px";
+    noBtn.style.top = "80px";
 
-    // When YES is clicked
-    yesBtn.addEventListener("click", () => {
-      message.innerHTML = "YAYYY!!! 💕 I knew you'd say yes!! You're stuck with me now 😌💖";
+    /* ======================================================
+       FLOATING "NO" BUTTON LOGIC
+       This detects mouse movement on the whole page.
+       If cursor gets within 100px of the button,
+       we move the button away.
+    ====================================================== */
 
-      for (let i = 0; i < 30; i++) {
-        let heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.top = Math.random() * window.innerHeight + "px";
-        document.body.appendChild(heart);
+    document.addEventListener("mousemove", (e) => {
 
-        setTimeout(() => {
-          heart.remove();
-        }, 3000);
+      const rect = noBtn.getBoundingClientRect();
+
+      const buttonX = rect.left + rect.width / 2;
+      const buttonY = rect.top + rect.height / 2;
+
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - buttonX, 2) +
+        Math.pow(e.clientY - buttonY, 2)
+      );
+
+      // If mouse is close to button (100px radius)
+      if (distance < 100) {
+
+        // Calculate direction away from cursor
+        const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
+
+        const moveDistance = 120;
+
+        const newX = rect.left + Math.cos(angle) * moveDistance;
+        const newY = rect.top + Math.sin(angle) * moveDistance;
+
+        // Keep button inside screen bounds
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+
+        noBtn.style.left = Math.min(Math.max(0, newX), maxX) + "px";
+        noBtn.style.top = Math.min(Math.max(0, newY), maxY) + "px";
       }
     });
+
+    /* ======================================================
+       YES BUTTON CLICK
+       Replace content with cute questionnaire
+    ====================================================== */
+
+    yesBtn.addEventListener("click", () => {
+
+      document.getElementById("mainText").innerText =
+        "YAY 💚 You made the correct decision.";
+
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+
+      questionnaire.innerHTML = `
+        <h2>Now that it's official...</h2>
+
+        <p>Where should we go?</p>
+        <select>
+          <option>Romantic dinner 🍝</option>
+          <option>Cute picnic 🌿</option>
+          <option>Movie night 🎬</option>
+          <option>Adventure date 🚗</option>
+        </select>
+
+        <p>What food are we having?</p>
+        <select>
+          <option>Italian 🍕</option>
+          <option>Indian 🍛</option>
+          <option>Sushi 🍣</option>
+          <option>Dessert only 🍰</option>
+        </select>
+
+        <br><br>
+        <button onclick="finalMessage()">Confirm 💌</button>
+      `;
+    });
+
+    /* ======================================================
+       FINAL MESSAGE FUNCTION
+    ====================================================== */
+
+    function finalMessage() {
+      questionnaire.innerHTML = `
+        <h2>It's a date 💚</h2>
+        <p>I can't wait to spend it with you.</p>
+        <p>You're my favourite person.</p>
+      `;
+    }
+
   </script>
 
 </body>
