@@ -59,9 +59,10 @@
     }
 
     #response {
-      margin-top: 20px;
-      font-size: 22px;
-      min-height: 40px;
+    margin-top: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    min-height: 60px;
     }
 
     #nextBtn {
@@ -74,6 +75,31 @@
     .finalMessage {
       font-size: 60px;
       font-weight: bold;
+
+      /* Sticker animation base */
+    .sticker {
+      font-size: 60px;
+      margin-top: 15px;
+      animation: pop 0.6s ease;
+    }
+    
+    @keyframes pop {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Falling socks animation */
+    .sock {
+      position: fixed;
+      font-size: 40px;
+      animation: fall 3s linear forwards;
+    }
+    
+    @keyframes fall {
+      from { transform: translateY(-100px); }
+      to { transform: translateY(110vh); }
+    }
     }
   </style>
 </head>
@@ -215,14 +241,50 @@ function selectAnswer(selectedIndex) {
   const q = questions[currentQuestion];
   const responseDiv = document.getElementById("response");
 
+  responseDiv.innerHTML = "";
+
+  let stickerHTML = "";
+
+  if (currentQuestion === 0) {
+    stickerHTML = "<div class='sticker'>💋</div>";
+  }
+
+  if (currentQuestion === 1) {
+    stickerHTML = "<div class='sticker'>🌟 YOU ARE THE BESTEST 🌟</div>";
+  }
+
+  if (currentQuestion === 2) {
+    // Rain of socks
+    for (let i = 0; i < 20; i++) {
+      let sock = document.createElement("div");
+      sock.className = "sock";
+      sock.innerHTML = "🧦";
+      sock.style.left = Math.random() * 100 + "vw";
+      sock.style.animationDuration = (2 + Math.random() * 2) + "s";
+      document.body.appendChild(sock);
+
+      setTimeout(() => sock.remove(), 3000);
+    }
+    stickerHTML = "<div class='sticker'>🧦🧦🧦</div>";
+  }
+
+  if (currentQuestion === 3) {
+    stickerHTML = "<div class='sticker'>🤤</div>";
+  }
+
+  if (currentQuestion === 4) {
+    stickerHTML = "<div class='sticker'>😸🎉😸</div>";
+  }
+
   if (q.correctIndex === -1 || selectedIndex === q.correctIndex) {
-    responseDiv.innerText = q.correctResponse;
+    responseDiv.innerHTML = q.correctResponse + stickerHTML;
   } else {
-    responseDiv.innerText = q.wrongResponse;
+    responseDiv.innerHTML = q.wrongResponse + stickerHTML;
   }
 
   document.getElementById("nextBtn").style.display = "inline-block";
 }
+
 
 /* =============================
    NEXT QUESTION
