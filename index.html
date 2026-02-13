@@ -74,13 +74,16 @@
     #yesBtn { background-color: #000; color: #ccff33; animation: pulse 1.5s infinite; }
     
     /* NO BUTTON - Fixed position is key for movement */
-    #noBtn { 
-      background-color: #fff; 
-      color: #000; 
-      position: fixed; 
-      z-index: 9999; 
+    #noBtn {
+      background-color: #fff;
+      color: #000;
+      position: fixed; /* Must be fixed */
+      z-index: 9999;
+      /* Set a fixed starting point so the JS doesn't get confused */
+      left: 300px; 
+      top: 400px;
+      transition: all 0.15s ease-out; /* Smooths the movement */
     }
-
     .optionBtn { display: block; width: 100%; margin: 8px 0; background: #000; color: #ccff33; }
     #nextBtn { background: #fff; color: #000; margin-top: 15px; }
 
@@ -126,52 +129,44 @@ const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
 /* =============================
-   DYNAMIC REPULSION LOGIC
-   Moves in ANY direction away from mouse
+   ANTI-GRAVITY NO BUTTON
+   Calculates precise push-back
 ============================= */
 document.addEventListener("mousemove", (e) => {
-  if (introArea.style.display === "none") return; 
+  if (introArea.style.display === "none") return;
 
   const rect = noBtn.getBoundingClientRect();
-  
-  // Calculate the center of the button
-  const buttonCenterX = rect.left + rect.width / 2;
-  const buttonCenterY = rect.top + rect.height / 2;
+  const btnX = rect.left + rect.width / 2;
+  const btnY = rect.top + rect.height / 2;
 
-  // Calculate distance between mouse and button center
-  const distance = Math.sqrt(
-    Math.pow(e.clientX - buttonCenterX, 2) +
-    Math.pow(e.clientY - buttonCenterY, 2)
-  );
+  // Distance between mouse and button
+  const distX = e.clientX - btnX;
+  const distY = e.clientY - btnY;
+  const distance = Math.sqrt(distX * distX + distY * distY);
 
-  // Trigger movement when mouse is within 120 pixels
+  // If mouse is within 120px
   if (distance < 120) {
-    // Calculate the angle from the mouse to the button
-    const angle = Math.atan2(buttonCenterY - e.clientY, buttonCenterX - e.clientX);
+    const angle = Math.atan2(distY, distX);
     
-    // The "Jump" distance
-    const hop = 150; 
+    // We move it in the OPPOSITE direction of the angle
+    const moveX = Math.cos(angle) * 150;
+    const moveY = Math.sin(angle) * 150;
 
-    // Calculate new target coordinates
-    let newX = rect.left + Math.cos(angle) * hop;
-    let newY = rect.top + Math.sin(angle) * hop;
+    let targetX = rect.left - moveX;
+    let targetY = rect.top - moveY;
 
-    // --- SCREEN BOUNDARY PROTECTION ---
-    const pad = 40; // Safety margin from edges
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
+    // Boundaries
+    const pad = 50;
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
 
-    // Clamp X coordinate
-    if (newX < pad) newX = pad;
-    if (newX + rect.width > screenW - pad) newX = screenW - rect.width - pad;
+    if (targetX < pad) targetX = pad;
+    if (targetX + rect.width > winW - pad) targetX = winW - rect.width - pad;
+    if (targetY < pad) targetY = pad;
+    if (targetY + rect.height > winH - pad) targetY = winH - rect.height - pad;
 
-    // Clamp Y coordinate
-    if (newY < pad) newY = pad;
-    if (newY + rect.height > screenH - pad) newY = screenH - rect.height - pad;
-
-    // Apply the new position
-    noBtn.style.left = newX + "px";
-    noBtn.style.top = newY + "px";
+    noBtn.style.left = targetX + "px";
+    noBtn.style.top = targetY + "px";
   }
 });
 
