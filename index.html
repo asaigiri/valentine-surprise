@@ -20,6 +20,7 @@
       color: #000;
     }
 
+    /* THE GLASS BOX */
     .container {
       position: relative;
       background: rgba(255, 255, 255, 0.25);
@@ -30,15 +31,20 @@
       box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.2);
       width: 90%;
       max-width: 500px;
+      min-height: 450px; /* Ensures the box stays a good size */
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
-    h1 { font-size: 48px; margin: 15px 0; line-height: 1.1; }
+    h1 { font-size: 40px; margin: 15px 0; line-height: 1.1; }
+    p { font-size: 28px; }
 
-    /* Response Text Styling - INCREASED SIZE */
     #res {
       margin-top: 20px;
-      font-size: 32px; /* This makes the feedback much larger */
+      font-size: 30px;
       font-weight: bold;
       line-height: 1.2;
     }
@@ -49,46 +55,41 @@
       object-fit: cover;
       border-radius: 50%;
       border: 4px solid #000;
-      margin-bottom: 10px;
     }
 
     .response-gif {
-      width: 240px;
+      width: 220px;
       border-radius: 20px;
-      margin-top: 15px;
-      border: 4px solid #000;
+      margin-top: 10px;
+      border: 3px solid #000;
     }
 
     button {
-      padding: 12px 25px;
+      padding: 10px 20px;
       font-family: 'Gaegu', cursive;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
       border: 3px solid #000;
       border-radius: 15px;
       cursor: pointer;
       margin: 8px;
       box-shadow: 4px 4px 0px #000;
+      transition: transform 0.1s;
     }
 
+    button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
     #yesBtn { background-color: #000; color: #ccff33; animation: pulse 1.5s infinite; }
-    
-    /* Update this in your <style> section */
-    .container {
-      position: relative; /* This is the anchor */
-      /* ... keep your other container styles ... */
-    }
     
     #noBtn {
       background-color: #fff;
       color: #000;
-      position: absolute; /* Changed from fixed to absolute */
+      position: absolute; /* Kept absolute for "fence" movement */
       z-index: 999;
-      transition: all 0.2s ease;
-      /* Starting position inside the box */
-      left: 70%; 
-      top: 60%;
+      left: 60%;
+      top: 70%;
     }
+
     .optionBtn { display: block; width: 100%; margin: 8px 0; background: #000; color: #ccff33; }
     #nextBtn { background: #fff; color: #000; margin-top: 15px; }
 
@@ -104,13 +105,14 @@
     }
     @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-    .final-photo {
-      width: 100%;
-      max-width: 350px;
-      border: 10px solid white;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    .polaroid {
+      background: white;
+      padding: 15px;
+      padding-bottom: 30px;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       transform: rotate(-2deg);
-      margin-top: 20px;
+      max-width: 300px;
     }
   </style>
 </head>
@@ -118,72 +120,69 @@
 <body>
 
 <div class="container" id="mainContainer">
-  
   <div id="introArea">
-    <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExem01YzZ1aDllNjhkbGRla3NmaXRidXFyZzIzcHVmNXg5czRsZHQxcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/auGFCmg6rM0eI/giphy.gif" class="main-gif" alt="Valentine GIF">
+    <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExem01YzZ1aDllNjhkbGRla3NmaXRidXFyZzIzcHVmNXg5czRsZHQxcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/auGFCmg6rM0eI/giphy.gif" class="main-gif">
     <h1>Do I love you the mostest?</h1>
     <button id="yesBtn">YES!</button>
     <button id="noBtn">NO</button>
   </div>
-  
+    
   <div id="captionArea" style="display: none;">
     <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzZjMnVjYmJqdTE0MnQzOXVjdHp1ZGwxZ2ZmY2thOXF1dm4xZHVyayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UhYOxlQqRB4Hske6vC/giphy.gif" class="response-gif">
     <h1>Duh!! Of course I love you the mostest 😉</h1>
-    <p style="font-size: 30px;">But before we celebrate, you have to pass a little "Us" exam...</p>
+    <p>But before we celebrate, you have to pass a little "Us" exam...</p>
     <button id="startQuizBtn" style="background: black; color: #ccff33;">I'm Ready! ✍️</button>
   </div>
-  
-  <div id="quiz" style="display: none;"></div>
-
-</div> ```
-  
+    
   <div id="quiz" style="display: none;"></div>
 </div>
 
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const quizDiv = document.getElementById("quiz");
+const container = document.getElementById("mainContainer");
 const introArea = document.getElementById("introArea");
+const captionArea = document.getElementById("captionArea");
+const quizDiv = document.getElementById("quiz");
+const startQuizBtn = document.getElementById("startQuizBtn");
 
-const container = document.querySelector(".container");
-
+/* --- NO BUTTON LOGIC --- */
 document.addEventListener("mousemove", (e) => {
   if (introArea.style.display === "none") return;
 
   const rect = noBtn.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
-  
   const btnCenterX = rect.left + rect.width / 2;
   const btnCenterY = rect.top + rect.height / 2;
 
-  const distance = Math.sqrt(
-    Math.pow(e.clientX - btnCenterX, 2) +
-    Math.pow(e.clientY - btnCenterY, 2)
-  );
+  const distance = Math.sqrt(Math.pow(e.clientX - btnCenterX, 2) + Math.pow(e.clientY - btnCenterY, 2));
 
-  // If mouse is within 80px
-  if (distance < 80) {
-    // Generate random coordinates WITHIN the container
-    // We give it a little "extra" room (padding) so it can go slightly outside the box
-    const padding = 50; 
+  if (distance < 100) {
+    // Math to stay inside the "Glass Box"
+    const maxX = containerRect.width - rect.width - 20;
+    const maxY = containerRect.height - rect.height - 20;
     
-    // Calculate max moves within the box
-    const maxX = containerRect.width + padding;
-    const minX = -padding;
-    const maxY = containerRect.height + padding;
-    const minY = -padding;
-
-    // Randomly hop to a new spot inside this "fence"
-    const newX = Math.random() * (maxX - minX) + minX;
-    const newY = Math.random() * (maxY - minY) + minY;
+    const newX = Math.random() * maxX;
+    const newY = Math.random() * maxY;
 
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
   }
 });
 
-/* QUESTIONS & GIFS */
+/* --- FLOW LOGIC --- */
+yesBtn.onclick = () => {
+  introArea.style.display = "none";
+  captionArea.style.display = "block";
+};
+
+startQuizBtn.onclick = () => {
+  captionArea.style.display = "none";
+  quizDiv.style.display = "block";
+  showQ();
+};
+
+/* --- QUIZ DATA --- */
 const questions = [
   { q: "1️⃣ Where did we first kiss?", opts: ["High Street", "House Bar", "Southpark", "Bear Lane"], ans: 0, res: "Correct! Popularly known as Broad Street 😌" },
   { q: "2️⃣ Who coined the term babsies?", opts: ["Anurag", "Priyadarshini"], ans: -1, res: "Doesn't matter, you're the bestest!" },
@@ -192,7 +191,6 @@ const questions = [
   { q: "5️⃣ Will you be my valentine?", opts: ["Yes", "Yes"], ans: 0, res: "Phew thank you for choosing yes. Yayy!! ❤️" }
 ];
 
-// REPLACE THESE URLs WITH YOUR GIPHY LINKS
 const gifs = [
   "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExaW5zZ2J4dWQ0N2o1NHI4dHlqYnJxa2JzOHg0enU5NnVwbDk2dTJiayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Bv76prPEWdr4nxovaK/giphy.gif",
   "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm5veHo0N2F5M2JqenZ6cTZ5ZW5mc2RzZm1uc3E4ZXAzamM3M2NvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jTfQtwVaqQaVh4ePJn/giphy.gif",
@@ -202,24 +200,6 @@ const gifs = [
 ];
 
 let current = 0;
-
-// New variables to grab the new elements
-const captionArea = document.getElementById("captionArea");
-const startQuizBtn = document.getElementById("startQuizBtn");
-
-// Change the Yes button to show the caption instead of the quiz
-yesBtn.onclick = () => {
-  introArea.style.display = "none";
-  noBtn.style.display = "none";
-  captionArea.style.display = "block"; // Show the sweet message
-};
-
-// Add this to handle the transition from caption to quiz
-startQuizBtn.onclick = () => {
-  captionArea.style.display = "none";
-  quizDiv.style.display = "block";
-  showQ(); // Now the quiz starts
-};
 
 function showQ() {
   const item = questions[current];
@@ -252,12 +232,11 @@ window.next = () => {
   current++;
   if (current < questions.length) showQ();
   else {
-    // This part replaces the quiz with your final message and photo
     quizDiv.innerHTML = `
       <h1 style="font-size: 40px;">HAPPY VALENTINE'S DAY MY LOVE! ❤️</h1>
       <div class="polaroid">
-        <img src="hello.jpeg" style="width: 100%; border-radius: 5px;">
-        <p style="font-size: 24px; margin-top: 10px;">You passed with flying colors! 🏆</p>
+        <img src="hello.jpeg" style="width: 100%; border-radius: 5px;" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1ZHZ1eG55eHBvM3p6bmZ4eDdyeGZ4eHgyeHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KZTv76prPEWdr4nxovaK/giphy.gif'">
+        <p style="font-size: 24px; margin-top: 10px; color: black;">You passed with flying colors! 🏆</p>
       </div>
     `;
   }
