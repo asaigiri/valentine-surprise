@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine Exam 💚</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    /* 1. VIBE & BACKGROUND */
     body {
       margin: 0;
       height: 100vh;
-      font-family: 'Arial Black', Gadget, sans-serif;
+      font-family: 'Gaegu', cursive; /* Applied the cute font here */
       background: radial-gradient(circle, #ccff33, #88b300);
       display: flex;
       justify-content: center;
@@ -20,94 +20,90 @@
       color: #000;
     }
 
-    /* 2. THE GLASS CONTAINER */
     .container {
       position: relative;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 50px 30px;
-      border-radius: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      padding: 40px 20px;
+      border-radius: 50px;
+      border: 3px solid #000;
+      box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.2);
       width: 90%;
-      max-width: 600px;
+      max-width: 500px;
       z-index: 10;
     }
 
     h1 {
-      font-size: clamp(32px, 8vw, 60px);
-      line-height: 1.1;
-      margin-bottom: 40px;
-      text-transform: uppercase;
-      letter-spacing: -2px;
-      color: #000;
-      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+      font-size: 50px;
+      margin: 20px 0;
+      line-height: 1;
     }
 
-    /* 3. NEON BUTTONS */
-    button {
-      padding: 18px 35px;
-      font-family: 'Arial Black', sans-serif;
-      font-size: 22px;
-      text-transform: uppercase;
+    /* Landing and Response GIFs */
+    .main-gif {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 50%; /* Makes the landing gif a circle */
       border: 4px solid #000;
+      margin-bottom: 10px;
+    }
+
+    .response-gif {
+      width: 220px;
+      border-radius: 20px;
+      margin-top: 15px;
+      border: 4px solid #000;
+    }
+
+    /* Hand-drawn style buttons */
+    button {
+      padding: 15px 30px;
+      font-family: 'Gaegu', cursive;
+      font-size: 28px;
+      font-weight: bold;
+      border: 3px solid #000;
       border-radius: 15px;
       cursor: pointer;
       margin: 10px;
-      transition: all 0.1s ease;
-      box-shadow: 6px 6px 0px #000;
+      transition: 0.2s;
+      box-shadow: 4px 4px 0px #000;
     }
 
-    button:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 8px 8px 0px #000;
-    }
-
-    button:active {
-      transform: translate(4px, 4px);
-      box-shadow: 0px 0px 0px #000;
-    }
-
-    #yesBtn, .optionBtn, #nextBtn {
+    #yesBtn {
       background-color: #000;
       color: #ccff33;
+      animation: pulse 1.5s infinite;
     }
 
     #noBtn {
       background-color: #fff;
       color: #000;
-      position: fixed; /* Fixed ensures it moves relative to screen */
+      position: fixed; 
       z-index: 9999;
     }
 
     .optionBtn {
       display: block;
       width: 100%;
-      margin: 12px 0;
-      font-size: 18px;
+      margin: 10px 0;
+      background: #000;
+      color: #ccff33;
     }
 
-    /* 4. GIFS & RESPONSES */
-    .response-gif {
-      width: 80%;
-      max-width: 250px;
-      border-radius: 20px;
+    #nextBtn {
+      background: #fff;
+      color: #000;
       margin-top: 20px;
-      border: 5px solid #000;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    #response {
-      margin-top: 20px;
-      font-size: 22px;
-      font-weight: bold;
-      min-height: 50px;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
-    /* 5. ANIMATIONS */
     .sock {
       position: fixed;
       top: -50px;
@@ -120,20 +116,16 @@
     @keyframes fall {
       to { transform: translateY(110vh) rotate(360deg); }
     }
-
-    .finalMessage {
-      font-size: 50px;
-      color: #000;
-    }
   </style>
 </head>
 
 <body>
 
-<div class="container" id="mainBox">
+<div class="container">
   <div id="introArea">
-    <h1 id="mainText">Will you be my Valentine?</h1>
-    <button id="yesBtn">YES</button>
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHR3Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJbxBmyfLYCjKiE/giphy.gif" class="main-gif" alt="Cute heart">
+    <h1>Will you be my Valentine?</h1>
+    <button id="yesBtn">YES!</button>
     <button id="noBtn">NO</button>
   </div>
   
@@ -146,78 +138,34 @@ const yesBtn = document.getElementById("yesBtn");
 const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
-/* =============================
-   NO BUTTON LOGIC (Fixed)
-============================= */
+/* NO BUTTON EVASION */
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
-  const buttonX = rect.left + rect.width / 2;
-  const buttonY = rect.top + rect.height / 2;
+  const distance = Math.sqrt(Math.pow(e.clientX - (rect.left + rect.width/2), 2) + Math.pow(e.clientY - (rect.top + rect.height/2), 2));
 
-  const distance = Math.sqrt(
-    Math.pow(e.clientX - buttonX, 2) + Math.pow(e.clientY - buttonY, 2)
-  );
+  if (distance < 130) {
+    const angle = Math.atan2((rect.top + rect.height/2) - e.clientY, (rect.left + rect.width/2) - e.clientX);
+    let newX = rect.left + Math.cos(angle) * 200;
+    let newY = rect.top + Math.sin(angle) * 200;
 
-  // If mouse gets within 150px, move the button
-  if (distance < 150) {
-    const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
-    const moveDist = 200;
-
-    let newX = rect.left + Math.cos(angle) * moveDist;
-    let newY = rect.top + Math.sin(angle) * moveDist;
-
-    // Boundary check to keep it on screen
-    const pad = 20;
-    newX = Math.max(pad, Math.min(newX, window.innerWidth - rect.width - pad));
-    newY = Math.max(pad, Math.min(newY, window.innerHeight - rect.height - pad));
+    newX = Math.max(20, Math.min(newX, window.innerWidth - rect.width - 20));
+    newY = Math.max(20, Math.min(newY, window.innerHeight - rect.height - 20));
 
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
   }
 });
 
-/* =============================
-   QUIZ DATA
-============================= */
+/* QUESTIONS & GIFS */
 const questions = [
-  {
-    question: "1️⃣ Let’s start easy. Where did we first kiss?",
-    options: ["High Street", "House Bar", "Southpark", "Bear Lane"],
-    correctIndex: 0,
-    correctResponse: "Correct. Some even call it Broad Street 😌",
-    wrongResponse: "Hmm... I remember it differently 👀"
-  },
-  {
-    question: "2️⃣ Who coined the term babsies?",
-    options: ["Anurag", "Priyadarshini"],
-    correctIndex: -1,
-    correctResponse: "Does it matter? You are the bestest.",
-    wrongResponse: ""
-  },
-  {
-    question: "3️⃣ How many pairs of socks have you stolen?",
-    options: ["2", "10", "100", "Elon Musk's net worth in socks"],
-    correctIndex: -1,
-    correctResponse: "Infinity. And I want them back (jks).",
-    wrongResponse: ""
-  },
-  {
-    question: "4️⃣ Which outfit do I love on you?",
-    options: ["Summer dress", "Blazer look", "Sports bra look"],
-    correctIndex: 1,
-    correctResponse: "That corporate look makes me swoon.",
-    wrongResponse: "Honestly? I love everything on you."
-  },
-  {
-    question: "5️⃣ Do I love you the mostest?",
-    options: ["Yes", "Yes"],
-    correctIndex: 0,
-    correctResponse: "Correct! See, I love you the mostest.",
-    wrongResponse: ""
-  }
+  { q: "1️⃣ Where did we first kiss?", opts: ["High Street", "House Bar", "Southpark", "Bear Lane"], ans: 0, res: "Correct! Broad Street vibes 😌" },
+  { q: "2️⃣ Who coined the term babsies?", opts: ["Anurag", "Priyadarshini"], ans: -1, res: "Doesn't matter, you're the bestest!" },
+  { q: "3️⃣ How many socks have you stolen?", opts: ["2", "10", "100", "Elon Musk's net worth"], ans: -1, res: "Infinite. I'm calling the police. 🚓" },
+  { q: "4️⃣ Favorite outfit of mine on you?", opts: ["Summer dress", "The Blazer Look", "Sports bra look"], ans: 1, res: "The corporate look... oh boy. 🤤" },
+  { q: "5️⃣ Do I love you the mostest?", opts: ["Yes", "Yes"], ans: 0, res: "Duh! I love you the mostest! ❤️" }
 ];
 
-// GIF PLACEHOLDERS - Replace these URLs
+// REPLACE THESE URLs WITH YOUR GIPHY LINKS
 const gifs = [
   "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIzeGZ3ZzRxeHpxZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41JWZ59aaaGb9Gxy/giphy.gif",
   "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHN3Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKoWXlo3M1nCik8/giphy.gif",
@@ -226,67 +174,47 @@ const gifs = [
   "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0Exk8EUzM9mR69Y4/giphy.gif"
 ];
 
-let currentQuestion = 0;
+let current = 0;
 
-/* =============================
-   GAME ENGINE
-============================= */
-yesBtn.addEventListener("click", () => {
+yesBtn.onclick = () => {
   introArea.style.display = "none";
   noBtn.style.display = "none";
   quizDiv.style.display = "block";
-  showQuestion();
-});
+  showQ();
+};
 
-window.showQuestion = function() {
-  const q = questions[currentQuestion];
+function showQ() {
+  const item = questions[current];
   quizDiv.innerHTML = `
-    <h1>${q.question}</h1>
-    <div id="optionsContainer">
-      ${q.options.map((opt, i) => `<button class="optionBtn" onclick="handleSelect(${i})">${opt}</button>`).join('')}
-    </div>
-    <div id="response"></div>
-    <button id="nextBtn" style="display:none;" onclick="handleNext()">Next ➡️</button>
+    <h1>${item.q}</h1>
+    ${item.opts.map((o, i) => `<button class="optionBtn" onclick="pick(${i})">${o}</button>`).join('')}
+    <div id="res"></div>
   `;
 }
 
-window.handleSelect = function(idx) {
-  const q = questions[currentQuestion];
-  const resp = document.getElementById("response");
+window.pick = (idx) => {
+  const item = questions[current];
+  const r = document.getElementById("res");
+  const gif = `<br><img src="${gifs[current]}" class="response-gif">`;
+  r.innerHTML = (item.ans === -1 || idx === item.ans ? item.res : "Hmm... I remember it differently 👀") + gif;
   
-  // Show GIF
-  const imgHtml = `<img src="${gifs[currentQuestion]}" class="response-gif">`;
-  
-  if (q.correctIndex === -1 || idx === q.correctIndex) {
-    resp.innerHTML = q.correctResponse + imgHtml;
-  } else {
-    resp.innerHTML = q.wrongResponse + imgHtml;
-  }
-
-  // Sock rain for question 3
-  if (currentQuestion === 2) {
-    for(let i=0; i<25; i++) {
-      let s = document.createElement("div");
-      s.className = "sock"; s.innerHTML = "🧦";
-      s.style.left = Math.random() * 100 + "vw";
-      s.style.animationDuration = (Math.random() * 2 + 1) + "s";
-      document.body.appendChild(s);
-      setTimeout(() => s.remove(), 3000);
+  if(current === 2) { // Sock Rain
+    for(let i=0; i<20; i++) {
+      let s = document.createElement("div"); s.className="sock"; s.innerHTML="🧦";
+      s.style.left = Math.random()*100+"vw"; s.style.animationDuration=(Math.random()*2+1)+"s";
+      document.body.appendChild(s); setTimeout(()=>s.remove(), 3000);
     }
   }
 
-  document.getElementById("nextBtn").style.display = "inline-block";
-  document.getElementById("optionsContainer").style.pointerEvents = "none"; // Prevent double clicking
-}
+  quizDiv.innerHTML += `<button id="nextBtn" onclick="next()">Next ➡️</button>`;
+  document.querySelectorAll(".optionBtn").forEach(b => b.disabled = true);
+};
 
-window.handleNext = function() {
-  currentQuestion++;
-  if (currentQuestion < questions.length) {
-    showQuestion();
-  } else {
-    quizDiv.innerHTML = `<div class="finalMessage">HAPPY VALENTINE'S DAY MY LOVE ❤️</div>`;
-  }
-}
+window.next = () => {
+  current++;
+  if (current < questions.length) showQ();
+  else quizDiv.innerHTML = "<h1>HAPPY VALENTINE'S DAY! ❤️</h1><p style='font-size:30px'>You passed the exam with flying colors!</p>";
+};
 </script>
 
 </body>
