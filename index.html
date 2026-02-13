@@ -126,8 +126,8 @@ const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
 /* =============================
-   REFINED FLOATING NO BUTTON
-   It scoots away but stays close
+   STRICT BOUNDARY NO BUTTON
+   Guaranteed to stay on screen
 ============================= */
 document.addEventListener("mousemove", (e) => {
   if (introArea.style.display === "none") return; 
@@ -135,33 +135,30 @@ document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
   const buttonX = rect.left + rect.width / 2;
   const buttonY = rect.top + rect.height / 2;
+  const mouseDistance = Math.sqrt(Math.pow(e.clientX - buttonX, 2) + Math.pow(e.clientY - buttonY, 2));
 
-  // How close the mouse needs to be to trigger a move
-  const triggerDistance = 100; 
-  
-  const mouseDistance = Math.sqrt(
-    Math.pow(e.clientX - buttonX, 2) +
-    Math.pow(e.clientY - buttonY, 2)
-  );
-
-  if (mouseDistance < triggerDistance) {
-    // Calculate angle away from the mouse
+  // If mouse is within 100px
+  if (mouseDistance < 100) {
     const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
+    const hop = 100; // Distance it jumps
     
-    // How far it hops (shorter distance = stays closer)
-    const hopDistance = 80; 
+    // Calculate potential new position
+    let newX = rect.left + Math.cos(angle) * hop;
+    let newY = rect.top + Math.sin(angle) * hop;
 
-    let newX = rect.left + Math.cos(angle) * hopDistance;
-    let newY = rect.top + Math.sin(angle) * hopDistance;
+    // --- THE FIX: ENFORCED BOUNDARIES ---
+    const buffer = 50; // Keep it 50px away from any edge
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
 
-    // Safety padding to keep it from hitting the very edge
-    const pad = 30;
-    const maxX = window.innerWidth - rect.width - pad;
-    const maxY = window.innerHeight - rect.height - pad;
-
-    // Keep it on screen
-    newX = Math.min(Math.max(pad, newX), maxX);
-    newY = Math.min(Math.max(pad, newY), maxY);
+    // If it tries to go off the right side, push it left
+    if (newX + rect.width > screenWidth - buffer) newX = screenWidth - rect.width - buffer;
+    // If it tries to go off the left side, push it right
+    if (newX < buffer) newX = buffer;
+    // If it tries to go off the bottom, push it up
+    if (newY + rect.height > screenHeight - buffer) newY = screenHeight - rect.height - buffer;
+    // If it tries to go off the top, push it down
+    if (newY < buffer) newY = buffer;
 
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
@@ -173,7 +170,7 @@ const questions = [
   { q: "1️⃣ Where did we first kiss?", opts: ["High Street", "House Bar", "Southpark", "Bear Lane"], ans: 0, res: "Correct! Some even call it Broad Street 😌" },
   { q: "2️⃣ Who coined the term babsies?", opts: ["Anurag", "Priyadarshini"], ans: -1, res: "Doesn't matter, you're the bestest!" },
   { q: "3️⃣ How many socks have you stolen?", opts: ["2", "10", "100", "Elon Musk's net worth"], ans: -1, res: "Infinite. I'm calling the police. 🚓" },
-  { q: "4️⃣ Favorite outfit of mine on you?", opts: ["Summer dress", "The Blazer Look", "Sports bra look"], ans: 1, res: "The corporate look... oh boy. 🤤" },
+  { q: "4️⃣ Favorite outfit of mine on you?", opts: ["Summer dress", "Blazer-skirt-stockings", "Sports bra look"], ans: 1, res: "I love it with everything and nothing on you. But that corporate look... oh boy. 🤤" },
   { q: "5️⃣ Do I love you the mostest?", opts: ["Yes", "Yes"], ans: 0, res: "Duh! I love you the mostest! ❤️" }
 ];
 
