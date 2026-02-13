@@ -1,42 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Be My Valentine?</title>
+  <title>Valentine Exam 💚</title>
 
   <style>
-    /* ===== PAGE STYLING ===== */
     body {
       margin: 0;
       height: 100vh;
       font-family: Arial, sans-serif;
-
-      /* Lime green gradient background */
       background: linear-gradient(135deg, #bfff00, #ccff33);
-
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-
-      overflow: hidden; /* prevents scroll when button moves */
+      overflow: hidden;
     }
 
     .container {
       position: relative;
+      width: 90%;
+      max-width: 800px;
     }
 
     h1 {
-      font-size: 40px;
+      font-size: 60px; /* BIG TITLE */
       color: white;
+      margin-bottom: 40px;
     }
 
     button {
-      padding: 15px 30px;
-      font-size: 18px;
+      padding: 20px 40px;
+      font-size: 26px; /* BIG BUTTONS */
       border: none;
-      border-radius: 30px;
+      border-radius: 40px;
       cursor: pointer;
-      margin: 15px;
+      margin: 20px;
       transition: 0.2s;
     }
 
@@ -48,134 +46,188 @@
     #noBtn {
       background-color: #6dbf00;
       color: white;
-      position: absolute; /* allows movement */
+      position: absolute;
     }
 
-    #questionnaire {
-      margin-top: 30px;
+    .optionBtn {
+      display: block;
+      width: 100%;
+      margin: 15px 0;
+      font-size: 22px;
+      background-color: white;
+      color: #6dbf00;
+    }
+
+    #response {
+      margin-top: 20px;
+      font-size: 22px;
+      color: white;
+      min-height: 40px;
+    }
+
+    #nextBtn {
+      display: none;
+      margin-top: 20px;
+      background-color: #6dbf00;
       color: white;
     }
 
-    select {
-      padding: 8px;
-      border-radius: 10px;
-      margin: 5px;
+    .finalMessage {
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1 id="mainText">Will you be my Valentine? 💚</h1>
+<div class="container">
+  <h1 id="mainText">Will you be my Valentine? 💚</h1>
 
-    <button id="yesBtn">Yes 💖</button>
-    <button id="noBtn">No 😢</button>
+  <button id="yesBtn">YES 💖</button>
+  <button id="noBtn">NO 😢</button>
 
-    <div id="questionnaire"></div>
-  </div>
+  <div id="quiz"></div>
+</div>
 
-  <script>
+<script>
 
-    // Get references to elements
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const questionnaire = document.getElementById("questionnaire");
-    const container = document.querySelector(".container");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const quizDiv = document.getElementById("quiz");
 
-    // Position NO button initially
-    noBtn.style.left = "150px";
-    noBtn.style.top = "80px";
+noBtn.style.left = "60%";
+noBtn.style.top = "60%";
 
-    /* ======================================================
-       FLOATING "NO" BUTTON LOGIC
-       This detects mouse movement on the whole page.
-       If cursor gets within 100px of the button,
-       we move the button away.
-    ====================================================== */
+/* =============================
+   FLOATING NO BUTTON
+============================= */
 
-    document.addEventListener("mousemove", (e) => {
+document.addEventListener("mousemove", (e) => {
 
-      const rect = noBtn.getBoundingClientRect();
+  const rect = noBtn.getBoundingClientRect();
+  const buttonX = rect.left + rect.width / 2;
+  const buttonY = rect.top + rect.height / 2;
 
-      const buttonX = rect.left + rect.width / 2;
-      const buttonY = rect.top + rect.height / 2;
+  const distance = Math.sqrt(
+    Math.pow(e.clientX - buttonX, 2) +
+    Math.pow(e.clientY - buttonY, 2)
+  );
 
-      const distance = Math.sqrt(
-        Math.pow(e.clientX - buttonX, 2) +
-        Math.pow(e.clientY - buttonY, 2)
-      );
+  if (distance < 120) {
+    const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
+    const moveDistance = 150;
 
-      // If mouse is close to button (100px radius)
-      if (distance < 100) {
+    const newX = rect.left + Math.cos(angle) * moveDistance;
+    const newY = rect.top + Math.sin(angle) * moveDistance;
 
-        // Calculate direction away from cursor
-        const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
 
-        const moveDistance = 120;
+    noBtn.style.left = Math.min(Math.max(0, newX), maxX) + "px";
+    noBtn.style.top = Math.min(Math.max(0, newY), maxY) + "px";
+  }
+});
 
-        const newX = rect.left + Math.cos(angle) * moveDistance;
-        const newY = rect.top + Math.sin(angle) * moveDistance;
+/* =============================
+   QUIZ DATA
+============================= */
 
-        // Keep button inside screen bounds
-        const maxX = window.innerWidth - rect.width;
-        const maxY = window.innerHeight - rect.height;
+const questions = [
+  {
+    question: "1️⃣ Let’s start easy. Where did we first kiss?",
+    options: ["High Street", "House Bar", "Southpark", "Bear Lane"],
+    response: "Correct. Some even call it Broad Street 😌"
+  },
+  {
+    question: "2️⃣ Who coined the term babsies?",
+    options: ["Anurag", "Priyadarshini"],
+    response: "Does it matter? All that matters is you are the bestest 💚"
+  },
+  {
+    question: "3️⃣ How many pairs of socks have you stolen from me?",
+    options: ["2", "10", "100", "Elon Musk's net worth in socks"],
+    response: "It’s somewhere between infinity and infinity 😭"
+  },
+  {
+    question: "4️⃣ Which outfit do I love on you?",
+    options: ["Summer dress", "Blazer-skirt-stockings", "Sports bra look"],
+    response: "Technically I love everything and nothing on you… but that corporate look makes me swoon 😍"
+  },
+  {
+    question: "5️⃣ Do I love you the mostest?",
+    options: ["Yes", "Yes"],
+    response: "YAYYY!! See I love you the mostest 💚"
+  }
+];
 
-        noBtn.style.left = Math.min(Math.max(0, newX), maxX) + "px";
-        noBtn.style.top = Math.min(Math.max(0, newY), maxY) + "px";
-      }
-    });
+let currentQuestion = 0;
 
-    /* ======================================================
-       YES BUTTON CLICK
-       Replace content with cute questionnaire
-    ====================================================== */
+/* =============================
+   YES CLICK STARTS QUIZ
+============================= */
 
-    yesBtn.addEventListener("click", () => {
+yesBtn.addEventListener("click", () => {
 
-      document.getElementById("mainText").innerText =
-        "YAY 💚 You made the correct decision.";
+  document.getElementById("mainText").innerText =
+    "Not so soon… You need to answer the following questions right 😌";
 
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
 
-      questionnaire.innerHTML = `
-        <h2>Now that it's official...</h2>
+  showQuestion();
+});
 
-        <p>Where should we go?</p>
-        <select>
-          <option>Romantic dinner 🍝</option>
-          <option>Cute picnic 🌿</option>
-          <option>Movie night 🎬</option>
-          <option>Adventure date 🚗</option>
-        </select>
+/* =============================
+   SHOW QUESTION
+============================= */
 
-        <p>What food are we having?</p>
-        <select>
-          <option>Italian 🍕</option>
-          <option>Indian 🍛</option>
-          <option>Sushi 🍣</option>
-          <option>Dessert only 🍰</option>
-        </select>
+function showQuestion() {
 
-        <br><br>
-        <button onclick="finalMessage()">Confirm 💌</button>
-      `;
-    });
+  const q = questions[currentQuestion];
 
-    /* ======================================================
-       FINAL MESSAGE FUNCTION
-    ====================================================== */
+  quizDiv.innerHTML = `
+    <h2>${q.question}</h2>
+    ${q.options.map(option =>
+      `<button class="optionBtn" onclick="selectAnswer()">${option}</button>`
+    ).join("")}
+    <div id="response"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
+  `;
+}
 
-    function finalMessage() {
-      questionnaire.innerHTML = `
-        <h2>It's a date 💚</h2>
-        <p>I can't wait to spend it with you.</p>
-        <p>You're my favourite person.</p>
-      `;
-    }
+/* =============================
+   HANDLE ANSWER CLICK
+============================= */
 
-  </script>
+function selectAnswer() {
+
+  const responseDiv = document.getElementById("response");
+  responseDiv.innerText = questions[currentQuestion].response;
+
+  document.getElementById("nextBtn").style.display = "inline-block";
+}
+
+/* =============================
+   NEXT QUESTION
+============================= */
+
+function nextQuestion() {
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    quizDiv.innerHTML = `
+      <div class="finalMessage">
+        💚 Happy Valentine’s Day My Love 💚
+      </div>
+    `;
+  }
+}
+
+</script>
 
 </body>
 </html>
