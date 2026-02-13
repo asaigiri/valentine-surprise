@@ -131,41 +131,51 @@ document.addEventListener("mousemove", (e) => {
 });
 
 /* =============================
-   QUIZ DATA
+   QUIZ DATA (Now with CORRECT answers)
 ============================= */
 
 const questions = [
   {
     question: "1️⃣ Let’s start easy. Where did we first kiss?",
     options: ["High Street", "House Bar", "Southpark", "Bear Lane"],
-    response: "Correct. Some even call it Broad Street 😌"
+    correctIndex: 0,
+    correctResponse: "Correct. Some even call it Broad Street 😌",
+    wrongResponse: "Hmm... I remember it differently 👀"
   },
   {
     question: "2️⃣ Who coined the term babsies?",
     options: ["Anurag", "Priyadarshini"],
-    response: "Does it matter? All that matters is you are the bestest 💚"
+    correctIndex: -1, // special case
+    correctResponse: "Does it matter? All that matters is you are the bestest 💚",
+    wrongResponse: ""
   },
   {
     question: "3️⃣ How many pairs of socks have you stolen from me?",
     options: ["2", "10", "100", "Elon Musk's net worth in socks"],
-    response: "It’s somewhere between infinity and infinity 😭"
+    correctIndex: -1,
+    correctResponse: "It’s somewhere between infinity and infinity 😭",
+    wrongResponse: ""
   },
   {
     question: "4️⃣ Which outfit do I love on you?",
     options: ["Summer dress", "Blazer-skirt-stockings", "Sports bra look"],
-    response: "Technically I love everything and nothing on you… but that corporate look makes me swoon 😍"
+    correctIndex: 1,
+    correctResponse: "Technically I love everything and nothing on you… but that corporate look makes me swoon 😍",
+    wrongResponse: "Incorrect. But honestly… I love everything on you."
   },
   {
     question: "5️⃣ Do I love you the mostest?",
     options: ["Yes", "Yes"],
-    response: "YAYYY!! See I love you the mostest 💚"
+    correctIndex: 0,
+    correctResponse: "YAYYY!! See I love you the mostest 💚",
+    wrongResponse: ""
   }
 ];
 
 let currentQuestion = 0;
 
 /* =============================
-   YES CLICK STARTS QUIZ
+   START QUIZ
 ============================= */
 
 yesBtn.addEventListener("click", () => {
@@ -189,11 +199,11 @@ function showQuestion() {
 
   quizDiv.innerHTML = `
     <h2>${q.question}</h2>
-    ${q.options.map(option =>
-      `<button class="optionBtn" onclick="selectAnswer()">${option}</button>`
+    ${q.options.map((option, index) =>
+      `<button class="optionBtn" onclick="selectAnswer(${index})">${option}</button>`
     ).join("")}
     <div id="response"></div>
-    <button id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
+    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Next ➡️</button>
   `;
 }
 
@@ -201,10 +211,18 @@ function showQuestion() {
    HANDLE ANSWER CLICK
 ============================= */
 
-function selectAnswer() {
+function selectAnswer(selectedIndex) {
 
+  const q = questions[currentQuestion];
   const responseDiv = document.getElementById("response");
-  responseDiv.innerText = questions[currentQuestion].response;
+
+  if (q.correctIndex === -1) {
+    responseDiv.innerText = q.correctResponse;
+  } else if (selectedIndex === q.correctIndex) {
+    responseDiv.innerText = q.correctResponse;
+  } else {
+    responseDiv.innerText = q.wrongResponse;
+  }
 
   document.getElementById("nextBtn").style.display = "inline-block";
 }
@@ -228,6 +246,7 @@ function nextQuestion() {
 }
 
 </script>
+
 
 </body>
 </html>
