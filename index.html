@@ -10,7 +10,7 @@
     body {
       margin: 0;
       height: 100vh;
-      font-family: 'Gaegu', cursive; /* Applied the cute font here */
+      font-family: 'Gaegu', cursive;
       background: radial-gradient(circle, #ccff33, #88b300);
       display: flex;
       justify-content: center;
@@ -24,7 +24,6 @@
       position: relative;
       background: rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
       padding: 40px 20px;
       border-radius: 50px;
       border: 3px solid #000;
@@ -34,75 +33,58 @@
       z-index: 10;
     }
 
-    h1 {
-      font-size: 50px;
-      margin: 20px 0;
-      line-height: 1;
+    h1 { font-size: 48px; margin: 15px 0; line-height: 1.1; }
+
+    /* Response Text Styling - INCREASED SIZE */
+    #res {
+      margin-top: 20px;
+      font-size: 32px; /* This makes the feedback much larger */
+      font-weight: bold;
+      line-height: 1.2;
     }
 
-    /* Landing and Response GIFs */
     .main-gif {
       width: 180px;
       height: 180px;
       object-fit: cover;
-      border-radius: 50%; /* Makes the landing gif a circle */
+      border-radius: 50%;
       border: 4px solid #000;
       margin-bottom: 10px;
     }
 
     .response-gif {
-      width: 220px;
+      width: 240px;
       border-radius: 20px;
       margin-top: 15px;
       border: 4px solid #000;
     }
 
-    /* Hand-drawn style buttons */
     button {
-      padding: 15px 30px;
+      padding: 12px 25px;
       font-family: 'Gaegu', cursive;
       font-size: 28px;
       font-weight: bold;
       border: 3px solid #000;
       border-radius: 15px;
       cursor: pointer;
-      margin: 10px;
-      transition: 0.2s;
+      margin: 8px;
       box-shadow: 4px 4px 0px #000;
     }
 
-    #yesBtn {
-      background-color: #000;
-      color: #ccff33;
-      animation: pulse 1.5s infinite;
-    }
-
-    #noBtn {
-      background-color: #fff;
-      color: #000;
+    #yesBtn { background-color: #000; color: #ccff33; animation: pulse 1.5s infinite; }
+    
+    /* NO BUTTON - Fixed position is key for movement */
+    #noBtn { 
+      background-color: #fff; 
+      color: #000; 
       position: fixed; 
-      z-index: 9999;
+      z-index: 9999; 
     }
 
-    .optionBtn {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      background: #000;
-      color: #ccff33;
-    }
+    .optionBtn { display: block; width: 100%; margin: 8px 0; background: #000; color: #ccff33; }
+    #nextBtn { background: #fff; color: #000; margin-top: 15px; }
 
-    #nextBtn {
-      background: #fff;
-      color: #000;
-      margin-top: 20px;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
     .sock {
       position: fixed;
@@ -112,25 +94,20 @@
       pointer-events: none;
       animation: fall 3s linear forwards;
     }
-    .polaroid {
-      background: white;
-      padding: 15px;
-      padding-bottom: 5px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      transform: rotate(-3deg); /* Gives it that messy, cute look */
-      margin: 20px auto;
-      max-width: 300px;
-      border: 1px solid #ddd;
-    }
+    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-    @keyframes fall {
-      to { transform: translateY(110vh) rotate(360deg); }
+    .final-photo {
+      width: 100%;
+      max-width: 350px;
+      border: 10px solid white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transform: rotate(-2deg);
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
-
 <div class="container">
   <div id="introArea">
     <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmhtYTNoYzVyM2VpNW1ieHVhZWFxZDFncWRvcTBneWhueXUzc3o5NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" class="main-gif" alt="Cute heart">
@@ -148,18 +125,43 @@ const yesBtn = document.getElementById("yesBtn");
 const quizDiv = document.getElementById("quiz");
 const introArea = document.getElementById("introArea");
 
-/* NO BUTTON EVASION */
+/* =============================
+   REFINED FLOATING NO BUTTON
+   It scoots away but stays close
+============================= */
 document.addEventListener("mousemove", (e) => {
+  if (introArea.style.display === "none") return; 
+
   const rect = noBtn.getBoundingClientRect();
-  const distance = Math.sqrt(Math.pow(e.clientX - (rect.left + rect.width/2), 2) + Math.pow(e.clientY - (rect.top + rect.height/2), 2));
+  const buttonX = rect.left + rect.width / 2;
+  const buttonY = rect.top + rect.height / 2;
 
-  if (distance < 130) {
-    const angle = Math.atan2((rect.top + rect.height/2) - e.clientY, (rect.left + rect.width/2) - e.clientX);
-    let newX = rect.left + Math.cos(angle) * 200;
-    let newY = rect.top + Math.sin(angle) * 200;
+  // How close the mouse needs to be to trigger a move
+  const triggerDistance = 100; 
+  
+  const mouseDistance = Math.sqrt(
+    Math.pow(e.clientX - buttonX, 2) +
+    Math.pow(e.clientY - buttonY, 2)
+  );
 
-    newX = Math.max(20, Math.min(newX, window.innerWidth - rect.width - 20));
-    newY = Math.max(20, Math.min(newY, window.innerHeight - rect.height - 20));
+  if (mouseDistance < triggerDistance) {
+    // Calculate angle away from the mouse
+    const angle = Math.atan2(buttonY - e.clientY, buttonX - e.clientX);
+    
+    // How far it hops (shorter distance = stays closer)
+    const hopDistance = 80; 
+
+    let newX = rect.left + Math.cos(angle) * hopDistance;
+    let newY = rect.top + Math.sin(angle) * hopDistance;
+
+    // Safety padding to keep it from hitting the very edge
+    const pad = 30;
+    const maxX = window.innerWidth - rect.width - pad;
+    const maxY = window.innerHeight - rect.height - pad;
+
+    // Keep it on screen
+    newX = Math.min(Math.max(pad, newX), maxX);
+    newY = Math.min(Math.max(pad, newY), maxY);
 
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
