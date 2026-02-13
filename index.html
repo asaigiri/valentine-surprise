@@ -14,6 +14,7 @@
       align-items: center;
       text-align: center;
       overflow: hidden;
+      color: black; /* All text now black */
     }
 
     .container {
@@ -23,14 +24,13 @@
     }
 
     h1 {
-      font-size: 60px; /* BIG TITLE */
-      color: white;
-      margin-bottom: 40px;
+      font-size: 70px;
+      margin-bottom: 50px;
     }
 
     button {
       padding: 20px 40px;
-      font-size: 26px; /* BIG BUTTONS */
+      font-size: 28px;
       border: none;
       border-radius: 40px;
       cursor: pointer;
@@ -39,12 +39,12 @@
     }
 
     #yesBtn {
-      background-color: white;
-      color: #6dbf00;
+      background-color: black;
+      color: lime;
     }
 
     #noBtn {
-      background-color: #6dbf00;
+      background-color: black;
       color: white;
       position: absolute;
     }
@@ -54,28 +54,26 @@
       width: 100%;
       margin: 15px 0;
       font-size: 22px;
-      background-color: white;
-      color: #6dbf00;
+      background-color: black;
+      color: lime;
     }
 
     #response {
       margin-top: 20px;
       font-size: 22px;
-      color: white;
       min-height: 40px;
     }
 
     #nextBtn {
       display: none;
       margin-top: 20px;
-      background-color: #6dbf00;
-      color: white;
+      background-color: black;
+      color: lime;
     }
 
     .finalMessage {
-      font-size: 48px;
+      font-size: 60px;
       font-weight: bold;
-      color: white;
     }
   </style>
 </head>
@@ -83,10 +81,10 @@
 <body>
 
 <div class="container">
-  <h1 id="mainText">Will you be my Valentine? 💚</h1>
+  <h1 id="mainText">Will you be my Valentine?</h1>
 
-  <button id="yesBtn">YES 💖</button>
-  <button id="noBtn">NO 😢</button>
+  <button id="yesBtn">YES</button>
+  <button id="noBtn">NO</button>
 
   <div id="quiz"></div>
 </div>
@@ -102,9 +100,13 @@ noBtn.style.top = "60%";
 
 /* =============================
    FLOATING NO BUTTON
+   It MOVES but never disappears
 ============================= */
 
 document.addEventListener("mousemove", (e) => {
+
+  if (yesBtn.style.display === "none") return; 
+  // only active on first screen
 
   const rect = noBtn.getBoundingClientRect();
   const buttonX = rect.left + rect.width / 2;
@@ -131,7 +133,7 @@ document.addEventListener("mousemove", (e) => {
 });
 
 /* =============================
-   QUIZ DATA (Now with CORRECT answers)
+   QUIZ DATA
 ============================= */
 
 const questions = [
@@ -145,29 +147,29 @@ const questions = [
   {
     question: "2️⃣ Who coined the term babsies?",
     options: ["Anurag", "Priyadarshini"],
-    correctIndex: -1, // special case
-    correctResponse: "Does it matter? All that matters is you are the bestest 💚",
+    correctIndex: -1,
+    correctResponse: "Does it matter? All that matters is you are the bestest.",
     wrongResponse: ""
   },
   {
     question: "3️⃣ How many pairs of socks have you stolen from me?",
     options: ["2", "10", "100", "Elon Musk's net worth in socks"],
     correctIndex: -1,
-    correctResponse: "It’s somewhere between infinity and infinity 😭",
+    correctResponse: "It’s somewhere between infinity and infinity.",
     wrongResponse: ""
   },
   {
     question: "4️⃣ Which outfit do I love on you?",
     options: ["Summer dress", "Blazer-skirt-stockings", "Sports bra look"],
     correctIndex: 1,
-    correctResponse: "Technically I love everything and nothing on you… but that corporate look makes me swoon 😍",
+    correctResponse: "Technically I love everything and nothing on you… but that corporate look makes me swoon.",
     wrongResponse: "Incorrect. But honestly… I love everything on you."
   },
   {
     question: "5️⃣ Do I love you the mostest?",
     options: ["Yes", "Yes"],
     correctIndex: 0,
-    correctResponse: "YAYYY!! See I love you the mostest 💚",
+    correctResponse: "YAYYY!! See I love you the mostest.",
     wrongResponse: ""
   }
 ];
@@ -179,9 +181,6 @@ let currentQuestion = 0;
 ============================= */
 
 yesBtn.addEventListener("click", () => {
-
-  document.getElementById("mainText").innerText =
-    "Not so soon… You need to answer the following questions right 😌";
 
   yesBtn.style.display = "none";
   noBtn.style.display = "none";
@@ -203,7 +202,7 @@ function showQuestion() {
       `<button class="optionBtn" onclick="selectAnswer(${index})">${option}</button>`
     ).join("")}
     <div id="response"></div>
-    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Next ➡️</button>
+    <button id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
   `;
 }
 
@@ -216,9 +215,7 @@ function selectAnswer(selectedIndex) {
   const q = questions[currentQuestion];
   const responseDiv = document.getElementById("response");
 
-  if (q.correctIndex === -1) {
-    responseDiv.innerText = q.correctResponse;
-  } else if (selectedIndex === q.correctIndex) {
+  if (q.correctIndex === -1 || selectedIndex === q.correctIndex) {
     responseDiv.innerText = q.correctResponse;
   } else {
     responseDiv.innerText = q.wrongResponse;
@@ -239,14 +236,13 @@ function nextQuestion() {
   } else {
     quizDiv.innerHTML = `
       <div class="finalMessage">
-        💚 Happy Valentine’s Day My Love 💚
+        Happy Valentine’s Day My Love
       </div>
     `;
   }
 }
 
 </script>
-
 
 </body>
 </html>
